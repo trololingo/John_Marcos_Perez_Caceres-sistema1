@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mapa mental — Kernel, Drivers y Hardware</title>
+  <meta name="description" content="Mapa mental interactivo de Kernel, Drivers y Hardware para la materia Sistema Operativo I. Creador: John Marcos Perez Caceres, Matrícula 2025-2587." />
+  <style>
+    :root{
+      --bg1:#f8fafc; /* slate-50 */
+      --bg2:#e0f2fe; /* sky-100 */
+      --ink:#0f172a; /* slate-900 */
+      --muted:#475569; /* slate-600 */
+      --line:#94a3b8; /* slate-400 */
+      --card: rgba(255,255,255,0.75);
+      --border: rgba(15,23,42,0.08);
+      --shadow: 0 12px 30px rgba(15,23,42,.12);
+      --radius: 18px;
+
+      --kernel-from:#2563eb; --kernel-to:#7c3aed; /* azul→violeta */
+      --drivers-from:#f59e0b; --drivers-to:#ef4444; /* ámbar→rojo */
+      --hardware-from:#10b981; --hardware-to:#0ea5e9; /* verde→cielo */
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; color:var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 10%, #ffffff 10%, var(--bg2) 70%), linear-gradient(160deg, var(--bg1), #eef2ff 45%, #e0e7ff 100%);
+    }
+    .container{max-width:1200px;margin:40px auto;padding:0 20px;}
+
+    /* Window chrome */
+    .chrome{display:flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid var(--border);border-bottom:0;background:rgba(255,255,255,.7);backdrop-filter: blur(10px);border-top-left-radius:var(--radius);border-top-right-radius:var(--radius);}
+    .dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+    .dot.red{background:#ef4444}.dot.yellow{background:#facc15}.dot.green{background:#22c55e}
+    .chrome-title{margin-left:6px;font-size:14px;color:#334155;font-weight:600}
+    .chrome-meta{margin-left:auto;font-size:12px;color:#64748b}
+
+    /* Card */
+    .card{background:var(--card);border:1px solid var(--border);border-top:0;border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius);box-shadow:var(--shadow)}
+    .card-inner{padding:20px}
+
+    /* Header */
+    h1{font-size:28px;margin:4px 0 8px 0;letter-spacing:.2px}
+    .lead{color:var(--muted);max-width:68ch}
+    .actions{margin-left:auto}
+    .btn{appearance:none;border:1px solid #cbd5e1;background:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;color:#0f172a;font-weight:600}
+    .btn:hover{background:#f8fafc}
+
+    /* Layout */
+    .grid{display:grid;grid-template-columns:1fr;gap:20px}
+    @media (min-width: 1024px){.grid{grid-template-columns: 2fr 1fr;}}
+
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 6px 18px rgba(15,23,42,.08)}
+
+    /* Detail panel */
+    .detail{padding:18px}
+    .badge{display:inline-flex;align-items:center;gap:8px;border:1px solid #e2e8f0;border-radius:999px;padding:6px 10px;font-size:12px;color:#334155;background:#f8fafc}
+    .muted{color:var(--muted)}
+    .detail h3{margin:.2rem 0 .3rem 0}
+    .detail ul{margin:.3rem 0 .2rem 1.1rem}
+
+    .mini-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
+
+    .footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;color:#475569;font-size:14px;margin-top:22px}
+
+    /* SVG map */
+    .map-wrap{height:560px}
+    @media (min-width: 900px){.map-wrap{height:720px}}
+    svg{width:100%;height:100%}
+    .node{cursor:pointer}
+    .node text{user-select:none;fill:#fff;font-weight:700;letter-spacing:.2px}
+    .node.main text{font-size:22px}
+    .node.sub text{font-size:13px}
+    .edge{stroke:var(--line);stroke-width:2.2;opacity:.95}
+    .node circle{filter: drop-shadow(0 8px 18px rgba(0,0,0,.25));}
+    .node.selected circle{stroke:#fff;stroke-width:3.4}
+
+    /* Print */
+    @media print{
+      .btn{display:none}
+      .grid{grid-template-columns: 1.5fr 1fr}
+      body{background:#fff}
+      .chrome,.card,.panel,.mini-card{box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Window chrome header -->
+    <div class="chrome" role="banner" aria-label="Barra de ventana">
+      <span class="dot red" aria-hidden="true"></span>
+      <span class="dot yellow" aria-hidden="true"></span>
+      <span class="dot green" aria-hidden="true"></span>
+      <div class="chrome-title">Mapa mental: Kernel, Drivers y Hardware</div>
+      <div class="chrome-meta">Sistema Operativo I • Matrícula 2025-2587</div>
+    </div>
+
+    <div class="card">
+      <div class="card-inner" style="padding-bottom:12px">
+        <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+          <div>
+            <h1>Mapa mental: Kernel, Drivers y Hardware</h1>
+            <p class="lead">Una explicación clara y humana de cómo el núcleo del sistema operativo conversa con los controladores y, mediante ellos, con el hardware real.</p>
+          </div>
+          <div class="actions">
+            <button class="btn" onclick="window.print()" title="Imprimir o guardar en PDF">Imprimir / Guardar PDF</button>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:14px">
+          <!-- Map panel -->
+          <section class="panel" aria-label="Mapa mental interactivo">
+            <div class="map-wrap">
+              <svg viewBox="0 0 1200 800" role="img" aria-label="Mapa mental Kernel, Drivers y Hardware">
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)"></path>
+                  </marker>
+                  <radialGradient id="bgGrad" cx="50%" cy="40%" r="65%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.92" />
+                    <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.7" />
+                  </radialGradient>
+
+                  <!-- Gradientes dinámicos se crearán por JS -->
+                </defs>
+                <rect x="0" y="0" width="1200" height="800" fill="url(#bgGrad)"></rect>
+                <g id="edges"></g>
+                <g id="nodes"></g>
+                <g id="subnodes"></g>
+              </svg>
+            </div>
+          </section>
+
+          <!-- Detail panel -->
+          <aside class="panel" aria-live="polite">
+            <div class="detail" id="detail">
+              <!-- Se rellena dinámicamente -->
+            </div>
+
+            <div style="padding:0 18px 18px 18px">
+              <div class="mini-card">
+                <h4 style="margin:0 0 6px 0">¿Cómo se relacionan?</h4>
+                <p class="muted" style="margin:0"> <strong>Aplicaciones</strong> → <em>llamadas al sistema</em> → <strong>Kernel</strong> → <em>drivers</em> → <strong>Hardware</strong>. El kernel decide, los drivers ejecutan, el hardware materializa. Si uno falla, toda la cadena lo siente.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <section style="margin-top:20px">
+          <h2 style="margin:0 0 8px 0;font-size:22px">Resumen en palabras simples</h2>
+          <div style="display:grid;grid-template-columns:1fr;gap:14px;margin-top:8px">
+            <div class="mini-card"><strong>Kernel</strong>: el árbitro. Reparte CPU, protege memoria y abre la puerta al hardware mediante llamadas al sistema.</div>
+            <div class="mini-card"><strong>Drivers</strong>: los intérpretes. Traducen lo que el SO necesita a señales que cada dispositivo entiende.</div>
+            <div class="mini-card"><strong>Hardware</strong>: lo físico. CPU, RAM, discos y periféricos que realizan el trabajo real.</div>
+          </div>
+        </section>
+
+        <footer class="footer" style="margin-bottom:10px">
+          <div>Creador: <strong>John Marcos Perez Caceres</strong></div>
+          <div>Matrícula <strong>2025-2587</strong> • Materia: <strong>Sistema Operativo I</strong></div>
+          <div id="version" class="muted"></div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Datos de nodos principales
+    const data = {
+      kernel: {
+        id: 'kernel', title: 'Kernel', xy: [600, 400], r: 95,
+        color: {from: getCSS('--kernel-from'), to: getCSS('--kernel-to')},
+        description: 'El kernel es el corazón del sistema operativo. Orquesta CPU, memoria y dispositivos; decide qué proceso corre y cuándo, cómo se comparte la memoria y cómo se accede al hardware de forma segura.',
+        bullets: [
+          'Aísla y protege: modo usuario vs. modo kernel',
+          'Expone llamadas al sistema (syscalls) como read(), write(), fork()',
+          'Planifica la CPU (p. ej., Round Robin, CFS)',
+          'Gestiona memoria (paginación, MMU, cachés)',
+          'Coordina E/S y sistema de archivos'
+        ]
+      },
+      drivers: {
+        id: 'drivers', title: 'Drivers', xy: [260, 420], r: 80,
+        color: {from: getCSS('--drivers-from'), to: getCSS('--drivers-to')},
+        description: 'Los controladores traducen las órdenes del sistema operativo al lenguaje concreto de cada dispositivo. Son la “voz” del SO ante el hardware.',
+        bullets: [
+          'Se cargan en el kernel o como módulos',
+          'Cada tipo de dispositivo requiere su driver',
+          'Impactan en estabilidad y rendimiento',
+          'Buen diseño = menos fallos y latencia'
+        ]
+      },
+      hardware: {
+        id: 'hardware', title: 'Hardware', xy: [960, 380], r: 80,
+        color: {from: getCSS('--hardware-from'), to: getCSS('--hardware-to')},
+        description: 'El hardware es lo físico: CPU, memoria, discos, buses y periféricos. Ejecuta instrucciones y mueve datos; el SO lo abstrae para que programar sea posible.',
+        bullets: [
+          'CPU ejecuta instrucciones y cambia de contexto',
+          'RAM almacena datos/código de trabajo',
+          'Discos y SSD guardan de forma persistente',
+          'Buses (PCIe) conectan y dan ancho de banda'
+        ]
+      }
+    };
+
+    // Subtemas
+    const subnodes = [
+      // Kernel
+      { parent: 'kernel', id: 'proc',  title: 'Gestión de procesos', xy: [600, 170], description: 'Crear, destruir y coordinar procesos/hilos; IPC y sincronización (semáforos, mutex).' },
+      { parent: 'kernel', id: 'mem',   title: 'Gestión de memoria',  xy: [430, 280], description: 'Asignadores, paginación, memoria virtual, TLB y protección por páginas.' },
+      { parent: 'kernel', id: 'fs',    title: 'Sistema de archivos', xy: [770, 280], description: 'Directorios, inodos, permisos, caché de página; formatos como ext4, NTFS, XFS.' },
+      { parent: 'kernel', id: 'sched', title: 'Planificador (CPU)',  xy: [430, 560], description: 'Decide qué proceso corre y cuánto tiempo, equilibrando respuesta y rendimiento.' },
+      { parent: 'kernel', id: 'sysc',  title: 'Llamadas al sistema', xy: [770, 560], description: 'Puerta de entrada desde modo usuario: open, exec, mmap, socket y más.' },
+
+      // Drivers
+      { parent: 'drivers', id: 'blk',  title: 'Bloque (discos/SSD)',  xy: [120, 360], description: 'Gestionan lecturas/escrituras, colas de E/S y planificación de bloques.' },
+      { parent: 'drivers', id: 'net',  title: 'Red (NIC)',            xy: [210, 250], description: 'Envía/recibe tramas; offloading, colas y filtros para rendimiento.' },
+      { parent: 'drivers', id: 'gpu',  title: 'Gráficos (GPU)',       xy: [210, 590], description: 'Dibujo de ventanas, 3D y aceleración por hardware.' },
+      { parent: 'drivers', id: 'usb',  title: 'USB / periféricos',    xy: [150, 500], description: 'Teclados, ratones, cámaras: enumeración, energía y protocolos.' },
+      { parent: 'drivers', id: 'prt',  title: 'Impresoras',           xy: [200, 650], description: 'Traducción de trabajos a PCL/PostScript u otros lenguajes.' },
+
+      // Hardware
+      { parent: 'hardware', id: 'h_cpu',  title: 'CPU / Núcleos',   xy: [1110, 300], description: 'ALU + control y vectoriales; cambio de contexto entre hilos.' },
+      { parent: 'hardware', id: 'h_ram',  title: 'Memoria (RAM)',    xy: [1000, 190], description: 'Volátil de trabajo; latencias y jerarquía con cachés L1/L2/L3.' },
+      { parent: 'hardware', id: 'h_disk', title: 'Almacenamiento',   xy: [1140, 480], description: 'SSD/NVMe y HDD: persistencia, IOPS y throughput.' },
+      { parent: 'hardware', id: 'h_per',  title: 'Periféricos',      xy: [1030, 600], description: 'Teclado, ratón, cámara; eventos de entrada/salida.' },
+      { parent: 'hardware', id: 'h_bus',  title: 'Buses (PCIe)',     xy: [1120, 380], description: 'Canales de alta velocidad entre dispositivos y CPU/Chipset.' }
+    ];
+
+    // --- Utilidades ---
+    function getCSS(varName){
+      return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+    }
+
+    function makeGradient(svg, id, from, to){
+      const defs = svg.querySelector('defs');
+      const g = document.createElementNS('http://www.w3.org/2000/svg','radialGradient');
+      g.setAttribute('id', id);
+      g.setAttribute('cx','50%'); g.setAttribute('cy','50%'); g.setAttribute('r','65%');
+      const s1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+      s1.setAttribute('offset','0%'); s1.setAttribute('stop-color', from); s1.setAttribute('stop-opacity','1');
+      const s2 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+      s2.setAttribute('offset','100%'); s2.setAttribute('stop-color', to); s2.setAttribute('stop-opacity','1');
+      g.appendChild(s1); g.appendChild(s2); defs.appendChild(g);
+    }
+
+    function circleNode(gRoot, node, main=true){
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.classList.add('node'); if(main) g.classList.add('main'); else g.classList.add('sub');
+      g.setAttribute('data-id', node.id);
+      const gradId = 'grad-'+node.id;
+      makeGradient(svg, gradId, node.color?.from || data[node.parent].color.from, node.color?.to || data[node.parent].color.to);
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx', node.xy[0]); c.setAttribute('cy', node.xy[1]);
+      c.setAttribute('r', main ? node.r : 54); c.setAttribute('fill', `url(#${gradId})`);
+      c.setAttribute('opacity', main ? '0.96' : '0.92');
+      c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', main ? '2' : '1.6');
+
+      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x', node.xy[0]); t.setAttribute('y', node.xy[1]);
+      t.setAttribute('text-anchor', 'middle'); t.setAttribute('dominant-baseline','middle');
+      if(main){ t.textContent = node.title; }
+      else {
+        const words = node.title.split(' ');
+        const t1 = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+        const t2 = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+        t1.setAttribute('x', node.xy[0]); t1.setAttribute('dy', '-0.4em');
+        t2.setAttribute('x', node.xy[0]); t2.setAttribute('dy', '1.2em');
+        t1.textContent = words.slice(0,2).join(' ');
+        t2.textContent = words.slice(2).join(' ');
+        t.appendChild(t1); t.appendChild(t2);
+      }
+
+      g.appendChild(c); g.appendChild(t);
+      gRoot.appendChild(g);
+      return g;
+    }
+
+    function lineEdge(gRoot, from, to){
+      const l = document.createElementNS('http://www.w3.org/2000/svg','line');
+      l.classList.add('edge');
+      l.setAttribute('x1', from[0]); l.setAttribute('y1', from[1]);
+      l.setAttribute('x2', to[0]);   l.setAttribute('y2', to[1]);
+      l.setAttribute('marker-end','url(#arrow)');
+      gRoot.appendChild(l);
+      return l;
+    }
+
+    function renderDetail(selected){
+      const box = document.getElementById('detail');
+      const isMain = !!data[selected.id];
+      const base = data[selected.id] || subnodes.find(n=>n.id===selected.id);
+      const parent = !isMain ? data[base.parent] : null;
+
+      const bullets = isMain && Array.isArray(base.bullets) ? `<ul>${base.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>` : '';
+      const bonus = selected.id==='drivers' ? `<p class="muted" style="font-size:13px">Consejo práctico: mantén tus drivers actualizados y firmados por el fabricante. Un buen driver vale oro en estabilidad.</p>` :
+                    selected.id==='kernel'  ? `<p class="muted" style="font-size:13px">Idea clave: el kernel no es una app más; es el árbitro que hace que todo conviva sin pisarse.</p>` :
+                    selected.id==='hardware'? `<p class="muted" style="font-size:13px">Curiosidad: la velocidad real se logra combinando buen hardware con un kernel y drivers bien afinados.</p>` : '';
+
+      box.innerHTML = `
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+          <span class="badge">${isMain? 'Nodo principal':'Subtema'}</span>
+          ${parent ? `<span class="badge">De: ${parent.title}</span>`:''}
+        </div>
+        <h3 style="margin:.1rem 0">${base.title}</h3>
+        ${base.description ? `<p class="muted">${base.description}</p>`:''}
+        ${bullets}
+        ${bonus}
+      `;
+    }
+
+    function selectNode(id){
+      selected = id;
+      // toggle clase .selected
+      document.querySelectorAll('.node').forEach(n=>n.classList.remove('selected'));
+      const g = document.querySelector(`.node[data-id="${id}"]`);
+      if(g) g.classList.add('selected');
+      renderDetail({id});
+    }
+
+    // --- Render ---
+    const svg = document.querySelector('svg');
+    const gEdges = document.getElementById('edges');
+    const gNodes = document.getElementById('nodes');
+    const gSubs  = document.getElementById('subnodes');
+
+    // Edges: entre principales y con subnodos
+    const edges = [
+      [data.kernel.xy, data.drivers.xy],
+      [data.kernel.xy, data.hardware.xy],
+      ...subnodes.map(s => [s.xy, data[s.parent].xy])
+    ];
+    edges.forEach(([a,b])=> lineEdge(gEdges, a, b));
+
+    // Nodos principales
+    const gKernel  = circleNode(gNodes, data.kernel, true);
+    const gDrivers = circleNode(gNodes, data.drivers, true);
+    const gHw      = circleNode(gNodes, data.hardware, true);
+
+    // Subnodos
+    subnodes.forEach(s=>{
+      // heredan paleta del padre
+      s.color = data[s.parent].color;
+      circleNode(gSubs, s, false);
+    });
+
+    // Interacción
+    document.querySelectorAll('.node').forEach(g=>{
+      g.addEventListener('click', () => selectNode(g.getAttribute('data-id')));
+      g.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); selectNode(g.getAttribute('data-id')); }});
+      g.setAttribute('tabindex','0');
+      g.setAttribute('role','button');
+      g.setAttribute('aria-label', 'Nodo '+g.getAttribute('data-id'));
+    });
+
+    // Estado inicial
+    let selected = 'kernel';
+    selectNode(selected);
+
+    // Fecha versión
+    const v = document.getElementById('version');
+    try{
+      const d = new Date();
+      v.textContent = 'Versión: '+ d.toLocaleDateString('es-DO', {year:'numeric', month:'long', day:'numeric'});
+    }catch{ v.textContent = '' }
+  </script>
+</body>
+</html>
